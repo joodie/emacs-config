@@ -1,0 +1,1 @@
+../projects/emacs-slides/simple-slides.el

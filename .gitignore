@@ -1,0 +1,16 @@
+auto-save-list
+backups
+.smex-items
+_usr*
+dictionary
+elpa
+ede-projects.el
+eproject.lst
+swank
+init.el.*
+*~
+places
+eshell
+url
+tramp
+
