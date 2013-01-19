@@ -1,13 +1,16 @@
 (deftheme joost
-  "Created 2012-10-15.")
-
-;; comment
+  "Created 2012-11-20.")
 
 (custom-theme-set-faces
  'joost
- '(default ((t (:family "Inconsolata" :foundry "apple" :width normal :height 140 :weight normal :slant normal :underline nil :overline nil :strike-through nil :box nil :inverse-video nil :foreground "black" :background "#fffff8" :stipple nil :inherit nil))))
+ '(outline-5 ((t (:foreground "#0040b2"))))
+ '(outline-4 ((t (:foreground "#600000" :inherit outline-5 ))))
+ '(outline-3 ((t (:foreground "#004f96" :inherit outline-5 ))))
+ '(outline-2 ((t (:foreground "#804000" :inherit outline-5))))
+ '(outline-1 ((t (:foreground "#009030" :inherit outline-5))))
  '(cursor ((((background light)) (:background "black")) (((background dark)) (:background "white"))))
  '(fixed-pitch ((t (:family "Monospace"))))
+ '(strike-through ((t (:foreground "green"))))
  '(variable-pitch ((t (:family "Sans Serif"))))
  '(escape-glyph ((t (:foreground "#d55e00"))))
  '(minibuffer-prompt ((t (:weight bold :foreground "#0072b2"))))
@@ -41,12 +44,13 @@
  '(mode-line-buffer-id ((t (:weight bold))))
  '(mode-line-emphasis ((t (:weight bold))))
  '(mode-line-highlight ((((class color) (min-colors 88)) (:box (:line-width 2 :color "grey40" :style released-button))) (t (:inherit (highlight)))))
- '(mode-line-inactive ((t (:weight light :foreground "#606060" :background "#f0f0f0" :inherit (mode-line)))))
+ '(mode-line-inactive ((t (:weight light :foreground "#808080" :background "black" :inherit (mode-line)))))
  '(isearch ((t (:foreground "white" :background "#d55e00"))))
  '(isearch-fail ((((class color) (min-colors 88) (background light)) (:background "RosyBrown1")) (((class color) (min-colors 88) (background dark)) (:background "red4")) (((class color) (min-colors 16)) (:background "red")) (((class color) (min-colors 8)) (:background "red")) (((class color grayscale)) (:foreground "grey")) (t (:inverse-video t))))
  '(lazy-highlight ((t (:foreground "white" :background "#cc79a7"))))
  '(match ((((class color) (min-colors 88) (background light)) (:background "yellow1")) (((class color) (min-colors 88) (background dark)) (:background "RoyalBlue3")) (((class color) (min-colors 8) (background light)) (:foreground "black" :background "yellow")) (((class color) (min-colors 8) (background dark)) (:foreground "white" :background "blue")) (((type tty) (class mono)) (:inverse-video t)) (t (:background "gray"))))
  '(next-error ((t (:inherit (region)))))
- '(query-replace ((t (:inherit (isearch))))))
+ '(query-replace ((t (:inherit (isearch)))))
+ '(default ((t (:family "Inconsolata" :foundry "apple" :width normal :height 140 :weight normal :slant normal :underline nil :overline nil :strike-through nil :box nil :inverse-video nil :foreground "black" :background "white" :stipple nil :inherit nil)))))
 
 (provide-theme 'joost)
