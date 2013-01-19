@@ -25,5 +25,19 @@ deftest and testing forms."
   (interactive "P")
   (hs-with-clojure-test #'hs-hide-block end))
 
+(add-hook 'clojure-mode-hook
+          (lambda ()
+            (hs-minor-mode +1)
+            (local-set-key (kbd "C-c h c")
+                           'hs-toggle-hiding)
+            (local-set-key (kbd "C-c h t")
+                           'hs-hide-all-clojure-tests)
+            (local-set-key (kbd "C-c h b")
+                           'hs-hide-block)
+            (local-set-key (kbd "C-c h s")
+                           'hs-show-all)
+            (local-set-key (kbd "C-c h a")
+                           'hs-hide-all)
 
+            (hs-hide-all-clojure-tests)))
 
