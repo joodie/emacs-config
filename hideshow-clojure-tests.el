@@ -4,6 +4,7 @@ tests) so that the tests (but not the def) is hidden, also hides
 deftest and testing forms."  
   (let ((hs-block-start-regexp "(with-test\\|(deftest\\|(testing")
         (hs-block-end-regexp ")")
+        (hs-hide-comments-when-hiding-all nil)
         (hs-adjust-block-beginning (lambda (initial)
                                      (save-excursion
                                        (if (looking-at "(with-test")
