@@ -1,16 +1,26 @@
 (when (not (string-match ":/opt/local/bin" (getenv "PATH")))
-  (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin" ":" (getenv "HOME") "/bin")))
+  (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin" ":" (getenv "HOME") "/bin:/usr/texbin")))
+
 (require 'package)
 
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives
              '("ELPA" . "http://tromey.com/elpa/"))
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/"))
 
 
 (package-initialize)
 
+;; org-mode global keys
 
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
+
+(setq org-default-notes-file  "~/org/notes.org")
 
 (defvar my-packages '(starter-kit starter-kit-lisp starter-kit-eshell
                                   starter-kit-bindings scpaste
@@ -65,6 +75,13 @@
 
 (column-number-mode 1)
 (hl-line-mode -1)
+
+
+(add-hook 'ruby-mode-hook
+          '(lambda ()
+             (add-to-list (make-local-variable 'paredit-space-for-delimiter-predicates)
+                          (lambda (_ _) nil))
+             (enable-paredit-mode)))
 
 (eval-after-load 'js
   '(progn (define-key js-mode-map "'" 'paredit-doublequote)))
@@ -126,6 +143,29 @@
 (add-to-list 'load-path
              "~/projects/kite")
 
+(require 'dired+)
+
+(require 'auto-complete)
+(require 'auto-complete-config)
+(ac-config-default)
+
+
+;; This should defer fontification, speeds up scrolling.
+;; See http://tsengf.blogspot.nl/2012/11/slow-scrolling-speed-in-emacs.html
+
+;(setq jit-lock-defer-time 0.05)
+;(setq jit-lock-stealth-time 1) ; start fontification when no input
+
+
+(defun three-columns
+  ()
+  (interactive)
+  (delete-other-windows)
+  (split-window-horizontally)
+  (split-window-horizontally)
+  (balance-windows)
+  (follow-mode +1))
+
 ;; (defun pretty-stuff
 ;;   nil
 ;;   (interactive)
@@ -168,9 +208,10 @@
 ;;                                 (set-symbols clojure-symbol-mapping)
 ;;                                 (clojure-test-mode +1)))
 
-(load-library "guru-mode")
+(add-hook 'clojure-mode-hook '(lambda ()
+                                (clojure-test-mode +1)))
 
-(add-hook 'prog-mode '(lambda () (guru-mode +1)))
+
 
 ;(remove-hook 'clojure-mode-hook 'esk-pretty-fn)
 
@@ -196,7 +237,7 @@
          nil
          (cons "-dq" (cons archive (mapcar 'archive-zip-fix-backslash-name files)))))
 
-(load-theme 'joost)
+
 
 (global-rainbow-delimiters-mode +1)
 
@@ -220,11 +261,23 @@
   (slime-eval-print string))
 
 
+(require 'midnight)
+
+(hl-line-mode +1)
+
+(require 'powerline)
+(powerline-default-theme)
+
+(projectile-global-mode 1)
+
+(load-file "hideshow-clojure-tests.el")
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector ["black" "red" "forest green" "DarkGoldenrod3" "blue" "magenta" "dark cyan" "white"])
  '(archive-zip-expunge (quote ("zip" "-q" "-d")))
  '(auto-indent-next-pair-timer-interval (quote ((clojure-mode 1.5) (default 0.0005))))
  '(coffee-tab-width 2)
@@ -236,7 +289,8 @@
  '(compilation-search-path (quote (nil)))
  '(compilation-window-height 20)
  '(css-indent-offset 2)
- '(custom-safe-themes (quote ("e5570dc54a4ba2d8d249779f902f8de1f1a5dacc1a0c3b4c118ba69922195d2a" "c973a0087f0c50f8014832f6f3b46c7a71bb1645bd05aee0f0c5cfd3b966e982" "fcb5ab7cb7c6248af9baec83807311ed2e02b31131a214465bce3cde1a31928f" "960163229791d5476bce25b951c72c696718b5985ce0611a8d2b9a5c1f771522" "4272a9d8aceeffd739a6d52a1ddc882d6f4ee9a546a598a3b2d64e8452e36df6" "516d3ad039684de5e55da7f3f79e25033665367d26353ae4e85409b4970b33e0" "f8be77f22462256ec1086b348d6efd28f75fff6ac502d36002460d197797ffe7" "125694a6a3f4ede7fa84c4179dcb3f10fcb55cfc938d1688647e8bf8b38f2cf9" "ec0da9651592a3b4eb1bc34dd8a47dcb0afd0d51b634f15462a9dedbba53600f" "79f01425c7a44ea876c813534a311d19985bab5dd18d80fb3d8cd1e633bd388f" "63436c7c5b4505f96f1263a0b6c9d2cdb63091a6605d671b92284f660bf9a134" "76f877336dff973860cf4c8fc53a15bf933e662d4a363235e3bb7f6a0061ff7b" "3157a15ee13cb18bf063233e1161912fb77a62cc97a991ae4212247d17936ecd" "efd8bf5f14d21ba5beda631dd4247e2680da9dd757e31a9b9ff799fbc1b422c6" "46cf34e44b48750b654eeb40e68021a70e97381d0b8548cff99f8c1627c5ee89" "1ef39d3ab971bb2820b4b3c0eb374bc5a6f745fce390d2c42beb00577f7ec668" "61ea6a54b8a6a5f7b4a827b1c314d025a41d55c616d3946177873835f5a10acb" "71b172ea4aad108801421cc5251edb6c792f3adbaecfa1c52e94e3d99634dee7" "6cfe5b2f818c7b52723f3e121d1157cf9d95ed8923dbc1b47f392da80ef7495d" "5e1d1564b6a2435a2054aa345e81c89539a72c4cad8536cfe02583e0b7d5e2fa" "21d9280256d9d3cf79cbcf62c3e7f3f243209e6251b215aede5026e0c5ad853f" "71efabb175ea1cf5c9768f10dad62bb2606f41d110152f4ace675325d28df8bd" "32b4839be3c3fa65377ce14d32f73be4d34ff7543bb8a9091f6fa5b53ecae54c" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" "7fe1e3de3e04afc43f9a3d3a8d38cd0a0efd9d4c" "d14db41612953d22506af16ef7a23c4d112150e5" default)))
+ '(custom-safe-themes (quote ("ddbe2d1e6208ce5ab21ec83cfcc3b31f009e6779a33f0c48514ca7abd5b79cee" "23029d4ad61c4ed4c3d6182f79e190cd60b99414cf8737eb24ab7ade6e7f9147" "b1c900df5fe6a3c052d00e197aa0bcf1b4c6bb05598a1b378b11c60da8f20faa" "938e431e2754b818626a24649fe8cefccf3c75f48f7379d492c1cb50e5149177" "c6f4dbba1e1444e4a0908f4fc507fccc0f1626818515eb3a82b1e7e11f5645bf" "821e340536c89aa46c2a3d792991c42ca178b65c18fc76c28602ff81c6795471" "e5570dc54a4ba2d8d249779f902f8de1f1a5dacc1a0c3b4c118ba69922195d2a" default)))
+ '(dired-dwim-target t)
  '(display-time-24hr-format t)
  '(display-time-day-and-date t)
  '(display-time-mode t)
@@ -248,6 +302,9 @@
  '(iswitch-menu-override-tmm-prompt t)
  '(magit-default-tracking-name-function (quote magit-default-tracking-name-branch-only))
  '(magit-git-executable "/usr/local/bin/git")
+ '(midnight-mode t nil (midnight))
+ '(org-agenda-files (quote ("~/projects/contendis/planning.org")))
+ '(org-use-speed-commands t)
  '(rails-always-use-text-menus t)
  '(rails-test:quiet t)
  '(safe-local-variable-values (quote ((auto-whitespace-cleanup . t) (whitespace-line-column . 80) (lexical-binding . t))))
@@ -256,15 +313,21 @@
  '(slime-complete-symbol-function (quote slime-simple-complete-symbol))
  '(smart-tab-completion-functions-alist (quote ((emacs-lisp-mode . lisp-complete-symbol) (text-mode . dabbrev-completion) (clojure-mode . complete-clojure-for-smart-tab))))
  '(sql-mysql-program "/usr/local/bin/mysql")
- '(tool-bar-mode nil))
+ '(tool-bar-mode nil)
+ '(yas/trigger-key "C-c TAB"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(cursor ((t (:inverse-video t))))
  '(highlight ((t (:background "LightYellow1")))))
 
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-page 'disabled nil)
+
+;; this needs to be evaluated AFTER custom-set-variables
+(load-theme 'joost)
+(put 'erase-buffer 'disabled nil)
