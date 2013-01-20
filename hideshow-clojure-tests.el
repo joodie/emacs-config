@@ -1,3 +1,5 @@
+;;;; hideshow-clojure-tests
+
 (defun hs-with-clojure-test (fn &rest args)
   "call fn with hideshow bindings marking (with-test (def ...)
 tests) so that the tests (but not the def) is hidden, also hides
@@ -39,6 +41,25 @@ deftest and testing forms."
                            'hs-show-all)
             (local-set-key (kbd "C-c h a")
                            'hs-hide-all)
-
             (hs-hide-all-clojure-tests)))
+
+;; override clojure-in-test-p, to detect if the current file has
+;; inline tests
+;;
+;; this makes clojure-test-run-tests work on packages with inline
+;; tests in addition to external tests
+
+;; note that clojure-test-clear removes *all* overlays, including the
+;; ones used by hideshow. in other words, running the tests will
+;; reveal the test code.
+
+(defun clojure-in-tests-p ()
+  (or (string-match-p "test\." (clojure-find-ns))
+      (string-match-p "/test" (buffer-file-name))
+      (save-excursion
+        (goto-char (point-min))
+        (and (search-forward-regexp "(deftest\\|(with-test\\|(testing" nil t)
+             t))))
+
+(provide 'hideshow-clojure-tests)
 

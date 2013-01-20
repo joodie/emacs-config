@@ -208,6 +208,11 @@
 ;;                                 (set-symbols clojure-symbol-mapping)
 ;;                                 (clojure-test-mode +1)))
 
+(require 'nrepl)
+(add-hook 'nrepl-interaction-mode-hook 'my-nrepl-mode-setup)
+(defun my-nrepl-mode-setup ()
+  (require 'nrepl-ritz))
+
 (add-hook 'clojure-mode-hook '(lambda ()
                                 (clojure-test-mode +1)))
 
@@ -270,7 +275,7 @@
 
 (projectile-global-mode 1)
 
-(load-file "hideshow-clojure-tests.el")
+(require 'hideshow-clojure-tests)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
