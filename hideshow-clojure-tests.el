@@ -40,8 +40,7 @@ deftest and testing forms."
             (local-set-key (kbd "C-c h s")
                            'hs-show-all)
             (local-set-key (kbd "C-c h a")
-                           'hs-hide-all)
-            (hs-hide-all-clojure-tests)))
+                           'hs-hide-all)))
 
 ;; override clojure-in-test-p, to detect if the current file has
 ;; inline tests

@@ -9,7 +9,7 @@
              '("ELPA" . "http://tromey.com/elpa/"))
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/"))
-
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
 (package-initialize)
 
@@ -21,32 +21,24 @@
 (global-set-key "\C-cb" 'org-iswitchb)
 
 (setq org-default-notes-file  "~/org/notes.org")
-
-(defvar my-packages '(starter-kit starter-kit-lisp starter-kit-eshell
-                                  starter-kit-bindings scpaste
-                                  clojure-mode clojure-test-mode
-                                  markdown-mode yaml-mode tuareg
-                                  marmalade oddmuse scpaste
-                                  company magit swank-cdt ecb_snap color-theme))
-
-(when (not package-archive-contents)
-  (package-refresh-contents))
-
-(dolist (p my-packages)
-  (when (not (package-installed-p p))
-    (package-install p)))
-
 (add-to-list 'load-path "~/.emacs.d")
 
 
+(defun select-minibuffer ()
+  "Make the active minibuffer the selected window."
+  (interactive)
+  (when (active-minibuffer-window)
+    (select-window (active-minibuffer-window))))
+
+(global-set-key "\C-cm" 'select-minibuffer)
 
 (set-face-attribute 'default nil
                     :family "Inconsolata" :height 140 :weight 'normal :width 'normal)
 
 (set-fontset-font "fontset-default" 'unicode (font-spec :family "DejaVu Sans"
-                                                         :width 'normal
-                                                         :size 13.0
-                                                         :weight 'normal))
+                                                        :width 'normal
+                                                        :size 13.0
+                                                        :weight 'normal))
 
 ;; (set-face-attribute 'default nil
 ;;                     :family "Inconsolata" :height 140 :weight 'normal :width 'normal)
@@ -62,7 +54,7 @@
 
 
 (menu-bar-mode +1)
-;(load-library "clojure-refactoring-mode")
+                                        ;(load-library "clojure-refactoring-mode")
 
 (require 'starter-kit-defuns)
 
@@ -70,7 +62,9 @@
                 lisp-mode
                 javascript-mode))
   (add-hook hook
-            '(lambda () (highlight-parentheses-mode t))))
+            '(lambda ()
+               (paredit-mode 1)
+               (highlight-parentheses-mode t))))
 
 
 (column-number-mode 1)
@@ -106,7 +100,7 @@
 
 ;; disable C-z on X11 sessions
 (when window-system
-(global-unset-key "\C-z"))
+  (global-unset-key "\C-z"))
 
 (add-to-list 'load-path (expand-file-name "~/projects/emacs-rails"))
 (require 'rails)
@@ -136,6 +130,15 @@
 (require 'rspec-mode)
 
 (require 'nrepl)
+(require 'ac-nrepl)
+
+(add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
+(add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)
+(eval-after-load "auto-complete"
+  '(add-to-list 'ac-modes 'nrepl-mode))
+
+
+
 
 (add-to-list 'load-path
              "~/projects/emacs-websocket")
@@ -153,8 +156,8 @@
 ;; This should defer fontification, speeds up scrolling.
 ;; See http://tsengf.blogspot.nl/2012/11/slow-scrolling-speed-in-emacs.html
 
-;(setq jit-lock-defer-time 0.05)
-;(setq jit-lock-stealth-time 1) ; start fontification when no input
+                                        ;(setq jit-lock-defer-time 0.05)
+                                        ;(setq jit-lock-stealth-time 1) ; start fontification when no input
 
 
 (defun three-columns
@@ -218,7 +221,7 @@
 
 
 
-;(remove-hook 'clojure-mode-hook 'esk-pretty-fn)
+                                        ;(remove-hook 'clojure-mode-hook 'esk-pretty-fn)
 
 (defun complete-clojure-for-smart-tab
   (&rest)
@@ -248,24 +251,6 @@
 
 (require 'simple-slides)
 
-(defun slime-eval-print-last-expression-as-comment (string)
-  "Evaluate sexp before point; print value into the current buffer as a comment"
-  (interactive (list (slime-last-expression)))
-  (insert " ; => ")
-  (slime-eval-print string))
-
-(add-hook 'slime-mode-hook
-          '(lambda ()
-             (local-set-key (kbd "C-x p")
-                            'slime-eval-print-last-expression-as-comment)))
-
-(defun slime-eval-print-last-expression (string)
-  "Evaluate sexp before point; print value into the current buffer"
-  (interactive (list (slime-last-expression)))
-  (insert "\n")
-  (slime-eval-print string))
-
-
 (require 'midnight)
 
 (hl-line-mode +1)
@@ -276,6 +261,8 @@
 (projectile-global-mode 1)
 
 (require 'hideshow-clojure-tests)
+(require 'git-gutter-fringe)
+(global-git-gutter-mode 1)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -294,7 +281,7 @@
  '(compilation-search-path (quote (nil)))
  '(compilation-window-height 20)
  '(css-indent-offset 2)
- '(custom-safe-themes (quote ("ddbe2d1e6208ce5ab21ec83cfcc3b31f009e6779a33f0c48514ca7abd5b79cee" "23029d4ad61c4ed4c3d6182f79e190cd60b99414cf8737eb24ab7ade6e7f9147" "b1c900df5fe6a3c052d00e197aa0bcf1b4c6bb05598a1b378b11c60da8f20faa" "938e431e2754b818626a24649fe8cefccf3c75f48f7379d492c1cb50e5149177" "c6f4dbba1e1444e4a0908f4fc507fccc0f1626818515eb3a82b1e7e11f5645bf" "821e340536c89aa46c2a3d792991c42ca178b65c18fc76c28602ff81c6795471" "e5570dc54a4ba2d8d249779f902f8de1f1a5dacc1a0c3b4c118ba69922195d2a" default)))
+ '(custom-safe-themes (quote ("e9a1226ffed627ec58294d77c62aa9561ec5f42309a1f7a2423c6227e34e3581" "5e1d1564b6a2435a2054aa345e81c89539a72c4cad8536cfe02583e0b7d5e2fa" "71efabb175ea1cf5c9768f10dad62bb2606f41d110152f4ace675325d28df8bd" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "c43ad3323d80d45d61366384b1f00774939487de4e33bf15b2f1299dfde8a18c" "ddbe2d1e6208ce5ab21ec83cfcc3b31f009e6779a33f0c48514ca7abd5b79cee" "23029d4ad61c4ed4c3d6182f79e190cd60b99414cf8737eb24ab7ade6e7f9147" "b1c900df5fe6a3c052d00e197aa0bcf1b4c6bb05598a1b378b11c60da8f20faa" "938e431e2754b818626a24649fe8cefccf3c75f48f7379d492c1cb50e5149177" "c6f4dbba1e1444e4a0908f4fc507fccc0f1626818515eb3a82b1e7e11f5645bf" "821e340536c89aa46c2a3d792991c42ca178b65c18fc76c28602ff81c6795471" "e5570dc54a4ba2d8d249779f902f8de1f1a5dacc1a0c3b4c118ba69922195d2a" default)))
  '(dired-dwim-target t)
  '(display-time-24hr-format t)
  '(display-time-day-and-date t)
@@ -308,14 +295,14 @@
  '(magit-default-tracking-name-function (quote magit-default-tracking-name-branch-only))
  '(magit-git-executable "/usr/local/bin/git")
  '(midnight-mode t nil (midnight))
+ '(nrepl-history-file "~/.emacs.d/.nrepl-history")
  '(org-agenda-files (quote ("~/projects/contendis/planning.org")))
  '(org-use-speed-commands t)
  '(rails-always-use-text-menus t)
  '(rails-test:quiet t)
- '(safe-local-variable-values (quote ((auto-whitespace-cleanup . t) (whitespace-line-column . 80) (lexical-binding . t))))
+ '(safe-local-variable-values (quote ((less-css-output-directory . "../../generated/public/assets") (less-css-output-directory . "../../generated/assets") (less-css-output-directory . "../../resources/public/assets") (less-css-compile-at-save . t) (auto-whitespace-cleanup . t) (whitespace-line-column . 80) (lexical-binding . t))))
  '(show-paren-mode t)
  '(show-trailing-whitespace nil)
- '(slime-complete-symbol-function (quote slime-simple-complete-symbol))
  '(smart-tab-completion-functions-alist (quote ((emacs-lisp-mode . lisp-complete-symbol) (text-mode . dabbrev-completion) (clojure-mode . complete-clojure-for-smart-tab))))
  '(sql-mysql-program "/usr/local/bin/mysql")
  '(tool-bar-mode nil)
